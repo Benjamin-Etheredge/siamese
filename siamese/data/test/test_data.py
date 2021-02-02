@@ -3,7 +3,6 @@ from ..dataset import create_dataset, create_nway_read_func
 from unittest import mock
 import pytest
 import tensorflow as tf
-from icecream import ic
 
 ###############################################################################
 # Fixtures

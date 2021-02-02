@@ -1,7 +1,6 @@
 from tensorflow import keras
 from tensorflow.keras.layers import Dense, Conv2D, Input, Flatten
 from .utils import bia_init, weight_init, reg
-from icecream import ic
 
 class Encoder(keras.Model):
    def __init__(self, *,

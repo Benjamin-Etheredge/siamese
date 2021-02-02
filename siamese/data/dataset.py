@@ -1,7 +1,6 @@
 import tensorflow as tf
 from pathlib import Path
 import os
-from icecream import ic
 
 
 def bool_mask(file, files):

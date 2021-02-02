@@ -1,6 +1,5 @@
 from .. import encoders
 import pytest
-from icecream import ic
 import numpy as np
 
 @pytest.mark.parametrize("conv_count", range(1,10, 3))
