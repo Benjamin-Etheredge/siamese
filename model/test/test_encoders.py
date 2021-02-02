@@ -56,6 +56,6 @@ def test_save_load(tmpdir):
    loaded_encoder = tf.keras.models.load_model(model_file)
    for layer, loaded_layer in zip(encoder.layers, loaded_encoder.layers):
       #ic(layer.get_config())
-      assert layer == loaded_layer
+      assert layer.get_config() == loaded_layer.get_config()
 
    #encoder.save(file_path, save_format='tf')

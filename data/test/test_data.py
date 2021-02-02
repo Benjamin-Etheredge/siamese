@@ -141,4 +141,5 @@ def test_create_dataset(test_data):
 
         anchor_label = labels[anchor_idx[0]]
         other_label = labels[other_idx[0]]
-        assert((anchor_label == other_label) == (label==1), "incorrect label")
+        do_labels_match = (anchor_label == other_label) == (label==1) 
+        assert do_labels_match, "incorrect label"
