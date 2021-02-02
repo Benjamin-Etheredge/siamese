@@ -23,7 +23,6 @@ import tensorflow as tf
       (224, 224, 3), 
       (100, 100, 100)])
 def test_encoder_build(input_shape):
-   #ic(input_shape)
    encoder = encoders.Encoder()
 
    # model shouldn't be built yet so inputs can vary
@@ -34,7 +33,6 @@ def test_encoder_build(input_shape):
    # Build seems to be broken...
    #encoder.build([None, *input_shape])
    data = np.random.rand(1, 225, 225, 3) * 255
-   #ic(data)
    encoder(data)
    encoder.summary()
    #except:
@@ -54,7 +52,6 @@ def test_save_load(tmpdir):
 
    loaded_encoder = tf.keras.models.load_model(model_file)
    for layer, loaded_layer in zip(encoder.layers, loaded_encoder.layers):
-      #ic(layer.get_config())
       assert layer.get_config() == loaded_layer.get_config()
 
    #encoder.save(file_path, save_format='tf')

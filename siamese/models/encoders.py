@@ -67,9 +67,6 @@ class Encoder(keras.Model):
    def build(self, input_shape):
       for layer in self.all_layers:
          layer.build(input_shape)
-         #ic(layer)
-         #ic(layer.build(input_shape))
-         #ic(layer.input_shape)
          input_shape = layer.output_shape
    '''
 
