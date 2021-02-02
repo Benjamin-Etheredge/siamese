@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 from icecream import ic
 
+
 def bool_mask(file, files):
    '''Function for producing/testing a tf bool mask'''
    return file == files
@@ -43,19 +44,18 @@ def get_pair(
    return anchor_file_path, sq_path, output_label
 
 
-def create_nway_read_func(files_tf, decode_func, n) :
+def create_nway_read_func(files, labels, decode_func, n) :
    #files_tf = tf.convert_to_tensor(tf.io.gfile.glob(str(Path(files_dir) / file_glob)))
 
-   assert tf.size(files_tf) > 0
-   labels = get_labels_from_files_path(files_tf)
-   filenames = tf.strings.split(files_tf, sep=os.sep)[:, -2:].to_tensor()
+   #assert tf.size(files_tf) > 0
+   filenames = tf.strings.split(files, sep=os.sep)[:, -2:].to_tensor()
 
    def reader(file_name):
       all_imgs = []
       anchors, others = [], []
       labels_list = []  # Some keras interfaces (like predict) expect a label even when not used, so we'll get them too
       pos_anchor, pos_other, label = get_pair(
-         files_tf=files_tf, 
+         files=files, 
          labels=labels, 
          filenames=filenames, 
          anchor_file_path=file_name, label=1)
@@ -65,7 +65,7 @@ def create_nway_read_func(files_tf, decode_func, n) :
       labels_list.append(label)
       # TODO will repeat some neagtives, but that's fine
       for _ in range(n-1):
-         _, other, label = get_pair(files_tf, labels, filenames, file_name, label=0)
+         _, other, label = get_pair(files, labels, filenames, file_name, label=0)
          all_imgs.append(decode_func(other))
          labels_list.append(label)
 

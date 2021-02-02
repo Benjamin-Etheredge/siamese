@@ -1,6 +1,7 @@
 from tensorflow import keras
-from tensorflow.keras.layers import Dense, Conv2D, Input
+from tensorflow.keras.layers import Dense, Conv2D, Input, Flatten
 from model.utils import bia_init, weight_init, reg
+from icecream import ic
 
 class Encoder(keras.Model):
    def __init__(self, *,
@@ -39,19 +40,40 @@ class Encoder(keras.Model):
       self.activation = activation
       self.conv_activation = conv_activation
       self.final_activation = activation
+      
+      self.all_layers = []
 
       # TODO is it better to use class values or pass them?
       self.conv_layers = self.build_conv_layers(
                conv_kernel_rate, conv_kernel_factor, conv_kernel_rate, conv_layers_count, 
                conv_filters_start, conv_filters_factor, conv_filters_rate, 
                stride_frequency, padding, conv_activation)
+      self.all_layers += self.conv_layers
+
+      self.flattener = Flatten()
+      self.all_layers.append(self.flattener)
 
       self.dense_layers = [
          Dense(dense_nodes, activation=activation, name=f"encoder_dense_{layer_idx}")
          for layer_idx in range(dense_layers_count)]
+      self.all_layers += self.dense_layers
       
       self.latent_layer = Dense(latent_nodes, activation=final_activation)
+      self.all_layers.append(self.latent_layer)
+      
       self.output_dim = latent_nodes
+   
+   # TODO fix
+   '''
+   def build(self, input_shape):
+      for layer in self.all_layers:
+         layer.build(input_shape)
+         #ic(layer)
+         #ic(layer.build(input_shape))
+         #ic(layer.input_shape)
+         input_shape = layer.output_shape
+   '''
+
 
    # TODO just manually pass list for layer values
    @staticmethod
@@ -92,9 +114,8 @@ class Encoder(keras.Model):
 
    def call(self, inputs):
       x = inputs
-      for layer in self.dense_layers:
+      for layer in self.all_layers:
          x = layer(x)
-      x = self.latent_layer(x)
       return x
 
    def get_config(self):
