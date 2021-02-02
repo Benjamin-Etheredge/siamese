@@ -1,4 +1,4 @@
-from model import encoders
+from .. import encoders
 import pytest
 from icecream import ic
 import numpy as np

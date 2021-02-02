@@ -1,10 +1,9 @@
-from model import encoders
 import pytest
 from icecream import ic
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.layers import Dense
-from model import SiameseModel
+from .. import SiameseModel
 
    
 @pytest.fixture(scope="session")

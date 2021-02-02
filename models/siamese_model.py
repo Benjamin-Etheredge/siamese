@@ -1,6 +1,4 @@
 import tensorflow as tf
-from model.encoders import Encoder
-
 
 class SiameseModel(tf.keras.Model):
    def __init__(

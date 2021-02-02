@@ -1,7 +1,6 @@
 import pytest
-from data import label_utils
 import tensorflow as tf
-from data import label_utils as lu
+from .. import label_utils as lu
 
 ###############################################################################
 def test_get_label_from_file_path(): # TODO use os sep

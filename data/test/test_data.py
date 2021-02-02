@@ -1,10 +1,7 @@
-from data import dataset
-from data.dataset import create_dataset, create_nway_read_func
+from .. import dataset
+from ..dataset import create_dataset, create_nway_read_func
 from unittest import mock
-from data import dataset
 import pytest
-from PIL import Image
-import numpy as np
 import tensorflow as tf
 from icecream import ic
 
