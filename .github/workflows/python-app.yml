@@ -39,7 +39,6 @@ jobs:
   bump:
     needs: build
     runs-on: ubuntu-latest
-
     
     steps:
     - uses: actions/checkout@v2
@@ -65,13 +64,13 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
-
-
+        branch: dev
+  
+  
   sync-branch:
     needs: bump
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@master
 
@@ -82,15 +81,16 @@ jobs:
           from_branch: dev
           target_branch: main
           github_token: ${{ github.token }}
-    
   
   create_release:
-    needs: [sync-branch]
+    needs: sync-branch
     name: Create Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: main
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -98,19 +98,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ steps.bump.outputs.version }}
-          release_name: Release ${{ github.ref }}
+          release_name: Release ${{ steps.bump.outputs.version }}}
           body: Created from dev push or merge
           draft: false
-          prerelease: false
+          prerelease: True
 
 
   deploy:
-    needs: [bump]
+    needs: sync-branch
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: main
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
