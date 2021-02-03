@@ -39,6 +39,7 @@ jobs:
   bump:
     needs: build
     runs-on: ubuntu-latest
+
     
     steps:
     - uses: actions/checkout@v2
@@ -65,6 +66,7 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.ref }}
+
 
   sync-branch:
     needs: bump
@@ -95,9 +97,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ steps.bump.outputs.version }}
           release_name: Release ${{ github.ref }}
-          body: dev push
+          body: Created from dev push or merge
           draft: false
           prerelease: false
 
