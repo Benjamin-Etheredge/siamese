@@ -93,7 +93,8 @@ jobs:
           ref: main
       - name: get_version
         run: |
-           echo "##[set-output name=version;]$(grep version setup.py | sed -E 's/.*version.*=.*"([[:digit:]]+\.[[:digit:]]\.[[:digit:]]+)".*/\1/')""
+            version=$(grep version setup.py | sed -E 's/.*version.*=.*"([[:digit:]]+\.[[:digit:]]\.[[:digit:]]+)".*/\1/')
+            echo "##[set-output name=version;]$version"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
