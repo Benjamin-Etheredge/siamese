@@ -65,23 +65,23 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
+        branch: dev
 
 
-  sync-branch:
-    needs: bump
-    runs-on: ubuntu-latest
+  #sync-branch:
+    #needs: bump
+    #runs-on: ubuntu-latest
     
-    steps:
-      - uses: actions/checkout@master
+    #steps:
+      #- uses: actions/checkout@master
 
-      - name: Merge dev -> main
-        uses: devmasx/merge-branch@v1.3.1
-        with:
-          type: now
-          from_branch: dev
-          target_branch: main
-          github_token: ${{ github.token }}
+      #- name: Merge dev -> main
+        #uses: devmasx/merge-branch@v1.3.1
+        #with:
+          #type: now
+          #from_branch: dev
+          #target_branch: main
+          #github_token: ${{ github.token }}
     
   
   create_release:
@@ -98,7 +98,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ steps.bump.outputs.version }}
-          release_name: Release ${{ github.ref }}
+          release_name: Release ${{ steps.bump.outputs.version }}}
           body: Created from dev push or merge
           draft: false
           prerelease: false
