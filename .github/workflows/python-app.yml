@@ -39,7 +39,9 @@ jobs:
   bump:
     needs: build
     runs-on: ubuntu-latest
-
+    outputs:
+      version: 
+        description: "new version number"
     
     steps:
     - uses: actions/checkout@v2
