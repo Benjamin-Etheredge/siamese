@@ -36,10 +36,10 @@ jobs:
         pytest
   
 
-    
   sync-branch:
     needs: build
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@master
 
@@ -53,7 +53,6 @@ jobs:
 
   bump:
     needs: [sync-branch]
-
     runs-on: ubuntu-latest
 
     steps:
@@ -82,7 +81,9 @@ jobs:
     - name: push code to main
       run: git push origin HEAD:main
   
+  
   create_release:
+    needs: [sync-branch]
     name: Create Release
     runs-on: ubuntu-latest
     steps:
