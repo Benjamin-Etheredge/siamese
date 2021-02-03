@@ -54,7 +54,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install bumpversion
     - name: Create local changes
-      run: ./bump_patch.py
+      run: ./bump_patch.sh
     - name: Commit files
       run: |
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
