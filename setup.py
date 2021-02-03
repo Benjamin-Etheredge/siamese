@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="siamese-bde",
+    name="siamese",
     version="0.0.5",
     author="Benjamin Etheredge",
     author_email="",
