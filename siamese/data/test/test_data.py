@@ -123,7 +123,7 @@ def test_nway_dataset():
 def test_create_dataset(test_data):
     data_dir, file_paths, filenames, labels = test_data
     ds = create_dataset(
-        anchor_files=file_paths,
+        anchor_items=file_paths,
         anchor_labels=labels,
         anchor_decode_func=lambda x: x,
     )
@@ -139,3 +139,17 @@ def test_create_dataset(test_data):
         other_label = labels[other_idx[0]]
         do_labels_match = (anchor_label == other_label) == (label==1) 
         assert do_labels_match, "incorrect label"
+
+from ..dataset import create_decoder
+def test_create_decoder(test_data):
+    func = create_decoder(lambda x: x*2, lambda x: x*4) 
+    assert func(1, 2, 4) == ((2, 8, 4))
+
+    data_dir, file_paths, filenames, labels = test_data
+    ds = create_dataset(
+        anchor_items=file_paths,
+        anchor_labels=labels,
+        anchor_decode_func=lambda x: x,
+    )
+    #ds.map(func)
+    # TODO 
