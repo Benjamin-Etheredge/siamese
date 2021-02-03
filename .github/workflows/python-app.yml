@@ -5,9 +5,9 @@ name: Python application
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [ dev ]
   pull_request:
-    branches: [ main, dev ]
+    branches: [ dev ]
 
 jobs:
   build:
@@ -100,8 +100,7 @@ jobs:
           body: dev push
           draft: false
           prerelease: false
-- name: GitHub Push
-  uses: ad-m/github-push-action@v0.6.0
+
 
   deploy:
     needs: [bump]
