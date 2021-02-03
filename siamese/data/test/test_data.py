@@ -7,24 +7,6 @@ import tensorflow as tf
 ###############################################################################
 # Fixtures
 ###############################################################################
-#def create_random_tf_img(height=224, width=224, depth=3):
-    #return tf.random.uniform((height, width, depth)) * 255
-    #return np.random.rand(height, width, depth) * 255
-
-#def create_img(img_arr):
-    #return Image.fromarray(img_arr)
-
-#def create_random_img(height=224, width=224, depth=3):
-    #return Image.fromarray(create_random_tf_img(height, width, depth))
-    ##return Image.fromarray(np.random.rand(height, width, depth) * 255)
-
-#@pytest.fixture(scope="session")
-#def image_file(tmpdir_factory):
-    #img = create_random_img()
-    #fn = tmpdir_factory.join("img.png")
-    #img.save(str(fn))
-    #return fn
-
 
 @pytest.fixture(scope="session")
 def test_data(tmpdir_factory, count=10):
