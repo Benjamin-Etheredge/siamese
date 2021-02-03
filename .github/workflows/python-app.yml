@@ -66,26 +66,10 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: dev
-
-
-  #sync-branch:
-    #needs: bump
-    #runs-on: ubuntu-latest
-    
-    #steps:
-      #- uses: actions/checkout@master
-
-      #- name: Merge dev -> main
-        #uses: devmasx/merge-branch@v1.3.1
-        #with:
-          #type: now
-          #from_branch: dev
-          #target_branch: main
-          #github_token: ${{ github.token }}
     
   
   create_release:
-    needs: [sync-branch]
+    needs: [bump]
     name: Create Release
     runs-on: ubuntu-latest
     steps:
