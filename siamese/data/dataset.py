@@ -114,7 +114,6 @@ def create_dataset(
       items = anchor_items
       labels = anchor_labels
 
-
    item_count = tf.size(items)
    assert item_count > 0, "No items found"
 
@@ -128,7 +127,9 @@ def create_dataset(
    ds = tf.data.Dataset.zip((item_ds, label_ds))
 
    # TODO maybe make parier throw out items without 2 elements?
-   parier = lambda item, label: get_pair(items, labels, item, label)
+   def parier(item, label): # testing switch away from lambda due to tensorflow graph error using lambdas
+      return get_pair(items, labels, item, label)
+   #parier = lambda item, label: get_pair(items, labels, item, label)
    ds = ds.map(parier)
 
    ds = decoder(ds, anchor_decode_func, other_decode_func)
