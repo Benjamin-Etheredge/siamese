@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="siamese",
-    version="0.0.19",
+    version="0.0.20",
     author="Benjamin Etheredge",
     author_email="",
     description="A small siamese network package",
