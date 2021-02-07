@@ -109,7 +109,7 @@ def test_create_dataset(test_data):
         anchor_labels=labels,
         anchor_decode_func=lambda x: x,
     )
-    for anchor, other, label in ds:
+    for (anchor, other), label in ds:
         assert label == 0 or label == 1, "Incorrect label value"
         assert anchor != other, "Anchor repeated"
 

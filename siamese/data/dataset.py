@@ -143,7 +143,7 @@ def decoder(
    if other_decoder is None:
       other_decoder = anchor_decoder
    def decode(anchor, other, label):
-      return anchor_decoder(anchor), other_decoder(other), label
+      return (anchor_decoder(anchor), other_decoder(other)), label
 
    #return ds.map(lambda anchor, other, label: (anchor_decoder(anchor), other_decoder(other), label))
    return ds.map(decode)
