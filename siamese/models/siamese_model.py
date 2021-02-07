@@ -13,7 +13,7 @@ class SiameseModel(tf.keras.Model):
 
    def call(self, input):
       anchor, other = input
-      return self.head(self.encoder(anchor), self.encoder(other))
+      return self.head((self.encoder(anchor), self.encoder(other)))
 
    def get_config(self):
       return {
