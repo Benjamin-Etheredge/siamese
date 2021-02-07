@@ -114,7 +114,6 @@ def create_dataset(
       items = anchor_items
       labels = anchor_labels
 
-
    item_count = tf.size(items)
    assert item_count > 0, "No items found"
 
