@@ -8,6 +8,7 @@ def get_labels_from_filenames(files: tf.Tensor, separator='_', label_idx=0):
    path_splits = tf.strings.split(files, sep=os.sep)
    filenames = tf.squeeze(path_splits[:, -1:].to_tensor()) # must use slicing for ragged tensor
    filename_splits = tf.strings.split(filenames, sep=separator)
+   # TODO join together since there can be multiple here
    labels = tf.squeeze(filename_splits[:, :label_idx+1].to_tensor()) # must use slicing for ragged tensor
    return labels
 
