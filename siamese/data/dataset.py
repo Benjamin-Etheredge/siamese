@@ -142,7 +142,11 @@ def decoder(
          other_decoder: FunctionType = None) -> tf.data.Dataset:
    if other_decoder is None:
       other_decoder = anchor_decoder
-   return ds.map(lambda anchor, other, label: (anchor_decoder(anchor), other_decoder(other), label))
+   def decode(anchor, other, label):
+      return anchor_decoder(anchor), other_decoder(other), label
+
+   #return ds.map(lambda anchor, other, label: (anchor_decoder(anchor), other_decoder(other), label))
+   return ds.map(decode)
 
 def create_decoder(anchor_decoder: FunctionType,
                    other_decoder: FunctionType = None) -> FunctionType:
