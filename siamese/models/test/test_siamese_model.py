@@ -60,8 +60,6 @@ def test_save_load(model, generated_data, tmpdir_factory):
    assert not model_path.exists()
 
    #model.build(np.shape(data[0]))
-   from icecream import ic
-   ic(data[0])
    model.predict([data[0:], data[0:]])
 
    model.summary()
