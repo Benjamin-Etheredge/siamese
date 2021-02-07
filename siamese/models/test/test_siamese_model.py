@@ -1,7 +1,8 @@
 import pytest
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dense, Concatenate, Input
+from tensorflow.keras import Model
 from .. import SiameseModel
 
    
@@ -19,10 +20,9 @@ def model():
       Dense(32),
       Dense(32)
    ])
-   head = tf.keras.models.Sequential([
-      Dense(32),
-      Dense(1)
-   ])
+   inputs = (Input(32), Input(32))
+   x = Dense(1)(Dense(32)(Concatenate()(inputs)))
+   head = Model(inputs=inputs, outputs=x)
    model = SiameseModel(
       encoder_model=encoder,
       head_model=head
@@ -61,6 +61,7 @@ def test_save_load(model, generated_data, tmpdir_factory):
 
    #model.build(np.shape(data[0]))
    model.predict([data[0:], data[0:]])
+
    model.summary()
    #model(generated_data[0]) # build model since .build doesn't work how I want yet
    model.save(model_path)
