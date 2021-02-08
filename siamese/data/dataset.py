@@ -106,7 +106,7 @@ def create_dataset(
       other_decode_func: FunctionType = None,
       repeat=None,
       prefetch_size=None
-   ):
+   ) -> tf.data.Dataset:
 
    if other_items is not None or other_labels is not None:
       assert (other_items is not None and other_labels is not None), "invalid others"
@@ -133,6 +133,8 @@ def create_dataset(
       return get_pair(items, labels, item, label)
    #parier = lambda item, label: get_pair(items, labels, item, label)
    ds = ds.map(parier, num_parallel_calls=AUTOTUNE)
+
+   ds = ds.shuffle(item_count, seed=4, reshuffle_each_iteration=True) # TODO pass seed
 
    ds = decoder(ds, anchor_decode_func, other_decode_func)
    
