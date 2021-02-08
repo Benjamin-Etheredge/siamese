@@ -2,6 +2,7 @@ import tensorflow as tf
 from pathlib import Path
 import os
 from types import FunctionType
+from tensorflow.data import AUTOTUNE
 
 
 def bool_mask(item, items):
@@ -104,6 +105,7 @@ def create_dataset(
       batch_size: int = 1, 
       other_decode_func: FunctionType = None,
       repeat=None,
+      prefetch_size=None
    ):
 
    if other_items is not None or other_labels is not None:
@@ -114,10 +116,10 @@ def create_dataset(
       items = anchor_items
       labels = anchor_labels
 
-   item_count = tf.size(items)
+   item_count = int(tf.size(items))
    assert item_count > 0, "No items found"
 
-   label_count = tf.size(labels)
+   label_count = int(tf.size(labels))
    assert label_count > 0, "No labels found"
 
    assert label_count == item_count, "Count of labels and items don't match"
@@ -130,9 +132,13 @@ def create_dataset(
    def parier(item, label): # testing switch away from lambda due to tensorflow graph error using lambdas
       return get_pair(items, labels, item, label)
    #parier = lambda item, label: get_pair(items, labels, item, label)
-   ds = ds.map(parier)
+   ds = ds.map(parier, num_parallel_calls=AUTOTUNE)
 
    ds = decoder(ds, anchor_decode_func, other_decode_func)
+   
+   if prefetch_size is None:
+      prefetch_size = item_count
+   ds = ds.prefetch(prefetch_size)
    
    return ds 
 
@@ -146,7 +152,7 @@ def decoder(
       return (anchor_decoder(anchor), other_decoder(other)), label
 
    #return ds.map(lambda anchor, other, label: (anchor_decoder(anchor), other_decoder(other), label))
-   return ds.map(decode)
+   return ds.map(decode, num_parallel_calls=AUTOTUNE)
 
 def create_decoder(anchor_decoder: FunctionType,
                    other_decoder: FunctionType = None) -> FunctionType:
