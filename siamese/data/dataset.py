@@ -134,6 +134,8 @@ def create_dataset(
    #parier = lambda item, label: get_pair(items, labels, item, label)
    ds = ds.map(parier, num_parallel_calls=AUTOTUNE)
 
+   ds = ds.shuffle(item_count, seed=4, reshuffle_each_iteration=True) # TODO pass seed
+
    ds = decoder(ds, anchor_decode_func, other_decode_func)
    
    if prefetch_size is None:
