@@ -1,4 +1,3 @@
-from .. import dataset
 from ..nway_dataset import create_n_way_dataset, n_way_read
 from unittest import mock
 import pytest
