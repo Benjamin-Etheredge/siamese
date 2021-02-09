@@ -27,13 +27,39 @@ def test_data(tmpdir_factory, count=1000, label_count=13):
     return fn, *[tf.convert_to_tensor(item) for item in (file_paths, filenames, labels)]
 
    
+import contextlib
+
+@contextlib.contextmanager
+def dummy_checker():
+    yield None
+
 ###############################################################################
 
+from ..nway_dataset import n_way_read
+@pytest.mark.parametrize('n', range(0, 16, 1))
+def test_nway_read(test_data, n):
+    data_dir, file_paths, items, labels = test_data
+    with pytest.raises(AssertionError) if n < 3 else dummy_checker():
+        read_func = n_way_read(items, labels, lambda x: x, n)
+        for item, label in zip(items, labels):
+            batch = list(iter(read_func(item, label)))
+            assert len(batch[0]) == n
+            batch_items = batch[0]
+            batch_labels = batch[1]
+            assert len(batch_items) == len(batch_labels)
+            assert batch_labels[0] == batch_labels[1]
+            for sub_label in batch_labels[2:]:
+                assert sub_label != batch_labels[0]
+
+        
+        
+       
 
 #mock_create_nway_read_func = mock.Mock(return_value=lambda x: x)
 #create_nway_read_func = mock_create_nway_read_func
 #anchor_func_partial = data.create_decode_partial(data.simple_decode, 224, 224)
 
+# TODO mock n_way_read or paramaterize it for injecting
 @pytest.mark.parametrize('n', range(1, 16, 1))
 @pytest.mark.parametrize('ratio', np.linspace(-1, 1.1, num=20))
 def test_nway_dataset(test_data, n, ratio):
