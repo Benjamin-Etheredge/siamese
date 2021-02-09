@@ -45,57 +45,6 @@ def get_pair(
    return anchor_key, sq_path, output_label
 
 
-def create_nway_read_func(items, labels, decode_func, n) :
-   #files_tf = tf.convert_to_tensor(tf.io.gfile.glob(str(Path(files_dir) / file_glob)))
-
-   #assert tf.size(files_tf) > 0
-   filenames = tf.strings.split(items, sep=os.sep)[:, -2:].to_tensor()
-
-   def reader(file_name):
-      all_imgs = []
-      anchors, others = [], []
-      labels_list = []  # Some keras interfaces (like predict) expect a label even when not used, so we'll get them too
-      pos_anchor, pos_other, label = get_pair(
-         items=items, 
-         labels=labels, 
-         filenames=filenames, 
-         anchor_file_path=file_name, label=1)
-      all_imgs.append(decode_func(pos_anchor))
-      all_imgs.append(decode_func(pos_other))
-      labels_list.append(label)
-      labels_list.append(label)
-      # TODO will repeat some neagtives, but that's fine
-      for _ in range(n-1):
-         _, other, label = get_pair(items, labels, filenames, file_name, label=0)
-         all_imgs.append(decode_func(other))
-         labels_list.append(label)
-
-      return tf.convert_to_tensor(all_imgs), tf.convert_to_tensor(labels_list)
-
-   return reader
-
-
-def create_n_way_dataset(items, ratio, decode_func,
-                         n_way_count, seed=4):
-    
-   assert n_way_count >= 2, "must be at least 2"
-
-   item_count = int(tf.size(items))
-   assert item_count > 0
-   assert item_count > n_way_count
-
-   ds = tf.data.Dataset.from_tensor_slices(items)
-
-   ds = ds.shuffle(item_count, seed=seed).take(int(ratio*item_count))
-
-   ds = ds.map(create_nway_read_func(items, decode_func, n=n_way_count),
-                     num_parallel_calls=tf.data.experimental.AUTOTUNE)
-   
-   ds = ds.cache()
-
-   return ds
-
-
 def create_dataset(
       anchor_items: tf.Tensor, 
       anchor_labels: tf.Tensor,
