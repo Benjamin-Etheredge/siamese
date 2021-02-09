@@ -106,7 +106,7 @@ def create_dataset(
       other_decode_func: FunctionType = None,
       repeat=None,
       prefetch_size=None
-   ):
+   ) -> tf.data.Dataset:
 
    if other_items is not None or other_labels is not None:
       assert (other_items is not None and other_labels is not None), "invalid others"
