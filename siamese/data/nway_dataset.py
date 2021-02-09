@@ -24,7 +24,7 @@ def n_way_read(items: tf.Tensor, labels: tf.Tensor, decode_func: FunctionType, n
         labels_list.append(label)
         labels_list.append(label)
         # TODO will repeat some neagtives, but that's fine
-        for _ in range(n-1):
+        for _ in range(n-2):
             anchor, other, label = get_pair(items, labels, item, label, output_label=0)
             all_imgs.append(decode_func(other))
 
@@ -39,11 +39,12 @@ def create_n_way_dataset(
       items: tf.Tensor, 
       labels: tf.Tensor, 
       ratio: float, 
-      batch_size: int, 
       anchor_decode_func: FunctionType,
       n_way_count: int):
+    """n_way_count is also batch size for ease of use"""
     
-    assert n_way_count >= 2, "must be at least 2"
+    assert n_way_count >= 3, "must be at least 3"
+    assert 0.0 <= ratio <= 1.0, "ratio must be between 0 and 1"
     count = int(tf.size(items))
     assert count > 0
     assert count > n_way_count
