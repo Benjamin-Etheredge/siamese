@@ -51,17 +51,14 @@ def test_nway_read(test_data, n):
             for sub_label in batch_labels[2:]:
                 assert sub_label != batch_labels[0]
 
-        
-        
-       
 
 #mock_create_nway_read_func = mock.Mock(return_value=lambda x: x)
 #create_nway_read_func = mock_create_nway_read_func
 #anchor_func_partial = data.create_decode_partial(data.simple_decode, 224, 224)
 
 # TODO mock n_way_read or paramaterize it for injecting
-@pytest.mark.parametrize('n', range(1, 16, 1))
-@pytest.mark.parametrize('ratio', np.linspace(-1, 1.1, num=20))
+@pytest.mark.parametrize('n', [1, 2, 3, 4, 8, 17, 32])
+@pytest.mark.parametrize('ratio', np.linspace(-1, 1.1, num=10))
 def test_nway_dataset(test_data, n, ratio):
     data_dir, file_paths, items, labels = test_data
     with pytest.raises(AssertionError) if (n < 3 or ratio < 0 or ratio > 1) \
