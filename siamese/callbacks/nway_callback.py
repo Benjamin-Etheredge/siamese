@@ -18,12 +18,9 @@ class NWayCallback(tf.keras.callbacks.Callback):
 
     def on_epoch_end(self, epoch, logs=None):
         if epoch % self.freq == 0:
-            all_encodings = []
-            for item, label in self.nway_ds:
-                all_encodings.append(self.encoder.predict_on_batch(item))
+            all_encodings = [self.encoder.predict_on_batch(item) for item, _ in self.nway_ds]
             assert(len(all_encodings) > 1)
             predictions = []
-            rankings = []
             distances = []
             for encodings in all_encodings:
                 assert(len(encodings) > 1)
@@ -36,5 +33,5 @@ class NWayCallback(tf.keras.callbacks.Callback):
 
             correct_predictions = [prediction == 0 for prediction in predictions]
             score = np.average(correct_predictions)
-            logs['nway_acc'] = score
+            logs['nway_acc'] = float(score)
 
