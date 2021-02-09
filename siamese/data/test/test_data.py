@@ -1,5 +1,5 @@
 from .. import dataset
-from ..dataset import create_dataset, create_nway_read_func
+from ..dataset import create_dataset
 from unittest import mock
 import pytest
 import tensorflow as tf
