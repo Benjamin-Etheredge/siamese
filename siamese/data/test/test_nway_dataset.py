@@ -64,15 +64,8 @@ def test_nway_read(test_data, n):
 @pytest.mark.parametrize('ratio', np.linspace(-1, 1.1, num=20))
 def test_nway_dataset(test_data, n, ratio):
     data_dir, file_paths, items, labels = test_data
-    if n < 3 or ratio < 0 or ratio > 1 :
-        with pytest.raises(AssertionError):
-            ds = create_n_way_dataset(
-                items=items,
-                labels=labels,
-                ratio=ratio,
-                anchor_decode_func=lambda x: x,
-                n_way_count=n)
-    else:
+    with pytest.raises(AssertionError) if (n < 3 or ratio < 0 or ratio > 1) \
+            else dummy_checker():
         ds = create_n_way_dataset(
                 items=items,
                 labels=labels,
