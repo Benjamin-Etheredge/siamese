@@ -50,10 +50,7 @@ def create_dataset(
       anchor_decode_func: FunctionType = lambda x: x,
       other_items: tf.Tensor = None, 
       other_labels: tf.Tensor = None,
-      batch_size: int = 1, 
       other_decode_func: FunctionType = None,
-      repeat=None,
-      prefetch_size=None
    ) -> tf.data.Dataset:
 
    if other_items is not None or other_labels is not None:
