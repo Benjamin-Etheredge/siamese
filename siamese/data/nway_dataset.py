@@ -57,7 +57,7 @@ def create_n_way_dataset(
 
     #ds = ds.cache()
     ds_labeled = ds.map(n_way_read(items, labels, anchor_decode_func, n=n_way_count),
-                        num_parallel_calls=tf.data.AUTOTUNE)
+                        num_parallel_calls=-1)
     ds = ds.cache()
     ds = ds.prefetch(count)
 

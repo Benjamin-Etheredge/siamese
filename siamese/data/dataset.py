@@ -2,7 +2,6 @@ import tensorflow as tf
 from pathlib import Path
 import os
 from types import FunctionType
-from tensorflow.data import AUTOTUNE
 
 
 def bool_mask(item, items):
@@ -81,7 +80,7 @@ def create_dataset(
    def parier(item, label): # testing switch away from lambda due to tensorflow graph error using lambdas
       return get_pair(items, labels, item, label)
    #parier = lambda item, label: get_pair(items, labels, item, label)
-   ds = ds.map(parier, num_parallel_calls=AUTOTUNE)
+   ds = ds.map(parier, num_parallel_calls=-1)
 
    ds = ds.shuffle(item_count, seed=4, reshuffle_each_iteration=True) # TODO pass seed
 
@@ -103,7 +102,7 @@ def decoder(
       return (anchor_decoder(anchor), other_decoder(other)), label
 
    #return ds.map(lambda anchor, other, label: (anchor_decoder(anchor), other_decoder(other), label))
-   return ds.map(decode, num_parallel_calls=AUTOTUNE)
+   return ds.map(decode, num_parallel_calls=-1)
 
 def create_decoder(anchor_decoder: FunctionType,
                    other_decoder: FunctionType = None) -> FunctionType:
