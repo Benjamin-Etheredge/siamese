@@ -1,4 +1,10 @@
 import tensorflow as tf
+from tensorflow.keras import Model
+
+def create_siamese_model(encoder: Model, head: Model, name=None):
+   encoder_inputs = tf.keras.Input(encoder.input_shape[1:]), tf.keras.Input(encoder.input_shape[1:])
+   encoder_outputs = head([encoder(encoder_inputs[0]), encoder(encoder_inputs[1])])
+   return Model(name=name, inputs=encoder_inputs, outputs=encoder_outputs)
 
 class SiameseModel(tf.keras.Model):
    def __init__(
