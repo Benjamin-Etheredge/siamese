@@ -86,9 +86,7 @@ def create_dataset(
 
    ds = decoder(ds, anchor_decode_func, other_decode_func)
    
-   if prefetch_size is None:
-      prefetch_size = item_count
-   ds = ds.prefetch(prefetch_size)
+   ds = ds.prefetch(-1)
    
    return ds 
 
