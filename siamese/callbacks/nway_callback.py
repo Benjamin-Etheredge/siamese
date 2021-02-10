@@ -33,5 +33,5 @@ class NWayCallback(tf.keras.callbacks.Callback):
 
             correct_predictions = [prediction == 0 for prediction in predictions]
             score = np.average(correct_predictions)
-            logs['nway_acc'] = float(score)
+            logs['nway_acc'] = score
 
