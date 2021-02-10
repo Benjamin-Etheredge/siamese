@@ -65,7 +65,8 @@ def test_on_epoch_end(count, freq):
             with pytest.raises(AssertionError):
                head.assert_called_with([item, item])
          assert 'nway_acc' in logs
-         assert type(logs['nway_acc']) == float
+         acc = logs['nway_acc']
+         assert 0.0 <= acc <= 1.0
          ds.__iter__.assert_called_once()
       else:
          encoder.predict_on_batch.assert_not_called()
