@@ -46,7 +46,7 @@ def test_on_epoch_end(count, freq):
    head = MagicMock(return_value=8)
    #head.__call__.return_value = 8
    ds = MagicMock()
-   items = list(range(count, 0, -1))
+   items = list(zip(range(count, 0, -1), range(count, 0, -1)))
    labels = list(range(0, count, 1))
    ds.__iter__.return_value = list(zip(items, labels))
 
