@@ -67,9 +67,12 @@ def test_on_epoch_end(count, freq):
          assert 'nway_acc' in logs
          acc = logs['nway_acc']
          assert 0.0 <= acc <= 1.0
+         assert 'nway_avg_dist' in logs
+         assert 'nway_avg_var' in logs
          ds.__iter__.assert_called_once()
       else:
          encoder.predict_on_batch.assert_not_called()
          head.assert_not_called()
          ds.__iter__.assert_not_called()
          #head.assert_has_calls(zip(items)
+      # TODO test prefix name stuff

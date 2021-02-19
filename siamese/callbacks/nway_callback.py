@@ -28,6 +28,7 @@ class NWayCallback(tf.keras.callbacks.Callback):
             #assert(len(all_encodings) > 1)
             predictions = []
             avg_distances = []
+            variances = []
             for encodings in all_encodings:
                 #assert(len(encodings) > 1)
                 anchor = encodings[0]
@@ -46,6 +47,7 @@ class NWayCallback(tf.keras.callbacks.Callback):
                 
                 predictions.append(np.argmin(distances))
                 avg_distances.append(np.average(distances))
+                variances.append(np.var(distances))
 
             correct_predictions = [prediction == 1 for prediction in predictions]
             score = np.average(correct_predictions)
@@ -53,5 +55,8 @@ class NWayCallback(tf.keras.callbacks.Callback):
 
             avg_distance = np.average(avg_distances)
             logs[f'{self.prefix_name}nway_avg_dist'] = avg_distance
+
+            avg_variance = np.average(variances)
+            logs[f'{self.prefix_name}nway_avg_var'] = avg_variance
 
 
