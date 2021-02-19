@@ -39,7 +39,7 @@ def n_way_read(items: tf.Tensor, labels: tf.Tensor, decode_func: FunctionType, n
 def create_n_way_dataset(
       items: tf.Tensor, 
       labels: tf.Tensor, 
-      ratio: float, 
+      ratio: float,
       anchor_decode_func: FunctionType,
       n_way_count: int):
     """n_way_count is also batch size for ease of use"""
@@ -53,13 +53,14 @@ def create_n_way_dataset(
     item_ds = tf.data.Dataset.from_tensor_slices(items)
     label_ds = tf.data.Dataset.from_tensor_slices(labels)
     ds = tf.data.Dataset.zip((item_ds, label_ds))
-    ds = ds.shuffle(count, seed=4).take(int(ratio*count))
+    sample_count = int(ratio*count)
+    ds = ds.shuffle(sample_count, seed=4, reshuffle_each_iteration=False).take(sample_count)
 
     #ds = ds.cache()
     ds_labeled = ds.map(n_way_read(items, labels, anchor_decode_func, n=n_way_count),
                         num_parallel_calls=-1)
-    ds = ds.cache()
-    ds = ds.prefetch(count)
+    ds_labeled = ds_labeled.cache()
+    ds_labeled = ds_labeled.prefetch(-1)
 
     return ds_labeled
     #return ds_prepared

@@ -57,7 +57,7 @@ def test_nway_read(test_data, n):
 #anchor_func_partial = data.create_decode_partial(data.simple_decode, 224, 224)
 
 # TODO mock n_way_read or paramaterize it for injecting
-@pytest.mark.parametrize('n', [1, 2, 3, 4, 8, 17, 32])
+@pytest.mark.parametrize('n', [1, 2, 3, 4, 17])
 @pytest.mark.parametrize('ratio', np.linspace(-1, 1.1, num=10))
 def test_nway_dataset(test_data, n, ratio):
     data_dir, file_paths, items, labels = test_data
@@ -77,5 +77,12 @@ def test_nway_dataset(test_data, n, ratio):
 
         nway_items_count = len(list(iter(ds)))
         assert nway_items_count == int(len(items) * ratio)
+
+        # Make sure items are the same each iteration
+        items_1 = [batch_items for batch_items, _ in ds]
+        items_2 = [batch_items for batch_items, _ in ds]
+        for batch_1, batch_2 in zip(items_1, items_2):
+            for item1, item2 in zip(batch_1, batch_2):
+                    assert item1 == item2
         
 ###############################################################################
