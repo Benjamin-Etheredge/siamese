@@ -80,10 +80,10 @@ def create_dataset(
    #parier = lambda item, label: get_pair(items, labels, item, label)
    ds = ds.map(parier, num_parallel_calls=-1)
 
+   ds = ds.shuffle(item_count, seed=4, reshuffle_each_iteration=True) # TODO pass seed
+
    if repeat:
       ds = ds.repeat(repeat)
-
-   ds = ds.shuffle(item_count, seed=4, reshuffle_each_iteration=True) # TODO pass seed
 
    ds = decoder(ds, anchor_decode_func, other_decode_func)
    
