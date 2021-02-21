@@ -51,6 +51,7 @@ def create_dataset(
       other_items: tf.Tensor = None, 
       other_labels: tf.Tensor = None,
       other_decode_func: FunctionType = None,
+      repeat: int = None
    ) -> tf.data.Dataset:
 
    if other_items is not None or other_labels is not None:
@@ -78,6 +79,9 @@ def create_dataset(
       return get_pair(items, labels, item, label)
    #parier = lambda item, label: get_pair(items, labels, item, label)
    ds = ds.map(parier, num_parallel_calls=-1)
+
+   if repeat:
+      ds = ds.repeat(repeat)
 
    ds = ds.shuffle(item_count, seed=4, reshuffle_each_iteration=True) # TODO pass seed
 
