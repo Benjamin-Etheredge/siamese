@@ -10,6 +10,7 @@ class NWayCallback(tf.keras.callbacks.Callback):
             nway_ds: tf.data.Dataset, 
             freq: int, 
             prefix_name: str = "",
+            comparator = 'min',
             *args, **kwargs):
         super(NWayCallback, self).__init__(*args, **kwargs)
         self.encoder = encoder # storing for faster comparisons
@@ -18,6 +19,16 @@ class NWayCallback(tf.keras.callbacks.Callback):
         # TODO layout structure of nway_ds
         self.freq = freq
         self.prefix_name = prefix_name
+
+        if comparator == 'min':
+            self.comparator = np.argmin
+        elif comparator == 'max':
+            self.comparator = np.argmax
+        elif type(comparator) == type(int):
+            # TODO Add threashold/max comparator
+            raise ValueError("Future Feature")
+        else:
+            raise ValueError("Invalid comparator")
 
     # TODO pull out some of this logic
     def on_epoch_end(self, epoch, logs=None):
@@ -45,7 +56,7 @@ class NWayCallback(tf.keras.callbacks.Callback):
                 #assert(len(distances) > 1)
                 # TODO move expected value to last item since all values could be zero causing 100% accuracy due to first item being min
                 
-                predictions.append(np.argmin(distances))
+                predictions.append(self.comparator(distances))
                 avg_distances.append(np.average(distances))
                 variances.append(np.var(distances))
 
