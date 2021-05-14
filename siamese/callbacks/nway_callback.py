@@ -19,6 +19,9 @@ class NWayCallback(tf.keras.callbacks.Callback):
         # TODO layout structure of nway_ds
         self.freq = freq
         self.prefix_name = prefix_name
+        self.score = None
+        self.avg_distance = None
+        self.avg_variance = None
 
         if comparator == 'min':
             self.comparator = np.argmin
@@ -61,13 +64,13 @@ class NWayCallback(tf.keras.callbacks.Callback):
                 variances.append(np.var(distances))
 
             correct_predictions = [prediction == 1 for prediction in predictions]
-            score = np.average(correct_predictions)
-            logs[f'{self.prefix_name}nway_acc'] = score
+            self.score = np.average(correct_predictions)
 
-            avg_distance = np.average(avg_distances)
-            logs[f'{self.prefix_name}nway_avg_dist'] = avg_distance
+            self.avg_distance = np.average(avg_distances)
 
-            avg_variance = np.average(variances)
-            logs[f'{self.prefix_name}nway_avg_var'] = avg_variance
+            self.avg_variance = np.average(variances)
+        logs[f'{self.prefix_name}nway_acc'] = self.score
+        logs[f'{self.prefix_name}nway_avg_dist'] = self.avg_distance
+        logs[f'{self.prefix_name}nway_avg_var'] = self.avg_variance
 
 
