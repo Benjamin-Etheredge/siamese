@@ -11,7 +11,8 @@ class SiameseModel(tf.keras.Model):
          self, 
          encoder_model: tf.keras.Model, 
          head_model: tf.keras.Model, 
-         name=None):
+         name="siamese",
+         **kwargs):
       super(SiameseModel, self).__init__(name=name)
       self._encoder = encoder_model
       self._head = head_model
