@@ -10,6 +10,7 @@ def n_way_read(items: tf.Tensor, labels: tf.Tensor, decode_func: FunctionType, n
     assert tf.size(items) == tf.size(labels)
     assert n >= 3
 
+    @tf.function
     def foo(anchor_item, anchor_label):
         all_imgs = []
         anchors, others = [], []
@@ -30,7 +31,6 @@ def n_way_read(items: tf.Tensor, labels: tf.Tensor, decode_func: FunctionType, n
             all_imgs.append(decode_func(other))
 
             labels_list.append(label)
-
 
         return tf.convert_to_tensor(all_imgs), tf.convert_to_tensor(labels_list)
     return foo
@@ -56,11 +56,9 @@ def create_n_way_dataset(
     sample_count = int(ratio*count)
     ds = ds.shuffle(sample_count, seed=4, reshuffle_each_iteration=False).take(sample_count)
 
-    #ds = ds.cache()
-    ds_labeled = ds.map(n_way_read(items, labels, anchor_decode_func, n=n_way_count),
-                        num_parallel_calls=-1)
-    ds_labeled = ds_labeled.cache()
-    ds_labeled = ds_labeled.prefetch(-1)
+    ds = ds.map(n_way_read(items, labels, anchor_decode_func, n=n_way_count),
+                        num_parallel_calls=-1, deterministic=False)
+    ds = ds.cache()
+    ds = ds.prefetch(-1)
 
-    return ds_labeled
-    #return ds_prepared
+    return ds

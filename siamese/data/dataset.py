@@ -4,17 +4,20 @@ import os
 from types import FunctionType
 
 
+@tf.function
 def bool_mask(item, items):
    '''Function for producing/testing a tf bool mask'''
    return item == items
 
 
+@tf.function
 def get_pair(
          item_keys, 
          labels, 
          anchor_key, 
          anchor_label, 
-         output_label=None):
+         output_label=None
+):
    '''Get pairwise data'''
 
    tf.debugging.assert_equal(len(tf.shape(item_keys)), tf.constant(1))
@@ -52,7 +55,7 @@ def create_dataset(
       other_labels: tf.Tensor = None,
       other_decode_func: FunctionType = None,
       repeat: int = None
-   ) -> tf.data.Dataset:
+) -> tf.data.Dataset:
 
    if other_items is not None or other_labels is not None:
       assert (other_items is not None and other_labels is not None), "invalid others"
@@ -73,35 +76,41 @@ def create_dataset(
    item_ds = tf.data.Dataset.from_tensor_slices(anchor_items)
    label_ds = tf.data.Dataset.from_tensor_slices(labels)
    ds = tf.data.Dataset.zip((item_ds, label_ds))
+   ds = ds.cache()
 
-   # TODO maybe make parier throw out items without 2 elements?
+   ds = ds.shuffle(item_count, reshuffle_each_iteration=True) # TODO pass seed? does that make it deterministic
+
+   # TODO add filter to throw out items with less than 2 examples
    def parier(item, label): # testing switch away from lambda due to tensorflow graph error using lambdas
       return get_pair(items, labels, item, label)
-   #parier = lambda item, label: get_pair(items, labels, item, label)
-   ds = ds.map(parier, num_parallel_calls=-1)
 
-   ds = ds.shuffle(item_count, seed=4, reshuffle_each_iteration=True) # TODO pass seed
+   ds = ds.map(parier, num_parallel_calls=-1, deterministic=False)
 
    if repeat:
       ds = ds.repeat(repeat)
 
-   ds = decoder(ds, anchor_decode_func, other_decode_func)
+   decoder_func = decoder_builder(anchor_decode_func, other_decode_func)
+   ds = ds.map(decoder_func, num_parallel_calls=-1, deterministic=False)
    
    ds = ds.prefetch(-1)
    
    return ds 
 
-def decoder(
-         ds: tf.data.Dataset, 
+
+def decoder_builder(
          anchor_decoder: FunctionType, 
-         other_decoder: FunctionType = None) -> tf.data.Dataset:
+         other_decoder: FunctionType = None
+) -> tf.data.Dataset:
+
    if other_decoder is None:
       other_decoder = anchor_decoder
+
+   @tf.function
    def decode(anchor, other, label):
       return (anchor_decoder(anchor), other_decoder(other)), label
 
-   #return ds.map(lambda anchor, other, label: (anchor_decoder(anchor), other_decoder(other), label))
-   return ds.map(decode, num_parallel_calls=-1)
+   return decode
+
 
 def create_decoder(anchor_decoder: FunctionType,
                    other_decoder: FunctionType = None) -> FunctionType:
