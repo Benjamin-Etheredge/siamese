@@ -57,8 +57,8 @@ def create_n_way_dataset(
     ds = ds.shuffle(sample_count, seed=4, reshuffle_each_iteration=False).take(sample_count)
 
     ds = ds.map(n_way_read(items, labels, anchor_decode_func, n=n_way_count),
-                        num_parallel_calls=-1, deterministic=False)
+                        num_parallel_calls=tf.data.AUTOTUNE, deterministic=False)
     ds = ds.cache()
-    ds = ds.prefetch(-1)
+    ds = ds.prefetch(tf.data.AUTOTUNE)
 
     return ds
