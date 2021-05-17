@@ -11,7 +11,8 @@ class NWayCallback(tf.keras.callbacks.Callback):
             freq: int, 
             prefix_name: str = "",
             comparator = 'min',
-            *args, **kwargs):
+            *args, **kwargs
+    ):
         super(NWayCallback, self).__init__(*args, **kwargs)
         self.encoder = encoder # storing for faster comparisons
         self.head = head 
@@ -37,14 +38,11 @@ class NWayCallback(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         if epoch % self.freq == 0:
             # TODO move to predict from comprehension
-            #all_encodings = self.encoder.predict(self.nway_ds)
             all_encodings = [self.encoder.predict_on_batch(item) for item, _ in self.nway_ds]
-            #assert(len(all_encodings) > 1)
             predictions = []
             avg_distances = []
             variances = []
             for encodings in all_encodings:
-                #assert(len(encodings) > 1)
                 anchor = encodings[0]
                 anchors = tf.convert_to_tensor([anchor for _ in encodings[1:]])
 
@@ -72,5 +70,3 @@ class NWayCallback(tf.keras.callbacks.Callback):
         logs[f'{self.prefix_name}nway_acc'] = self.score
         logs[f'{self.prefix_name}nway_avg_dist'] = self.avg_distance
         logs[f'{self.prefix_name}nway_avg_var'] = self.avg_variance
-
-
