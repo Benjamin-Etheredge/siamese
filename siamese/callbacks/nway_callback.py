@@ -48,9 +48,7 @@ class NWayCallback(tf.keras.callbacks.Callback):
 
                 # Move expected match to prevent 100% accuracy spike when all distances are equal
                 #encodings[1], encodings[2] = encodings[2], encodings[1] # TODO why does this duplicate entry?
-                temp = deepcopy(encodings[2])
-                encodings[2] = deepcopy(encodings[1])
-                encodings[1] = temp
+                encodings[1], encodings[2] = deepcopy(encodings[2]), deepcopy(encodings[1])
 
                 distances = self.head.predict_on_batch((anchors, tf.convert_to_tensor(encodings[1:])))
                 #distances = np.array([self.head((anchor, encoding)) for encoding in encodings[1:]]).flatten()
