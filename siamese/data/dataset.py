@@ -84,15 +84,15 @@ def create_dataset(
    def parier(item, label): # testing switch away from lambda due to tensorflow graph error using lambdas
       return get_pair(items, labels, item, label)
 
-   ds = ds.map(parier, num_parallel_calls=-1, deterministic=False)
+   ds = ds.map(parier, num_parallel_calls=tf.data.AUTOTUNE, deterministic=False)
 
    if repeat:
       ds = ds.repeat(repeat)
 
    decoder_func = decoder_builder(anchor_decode_func, other_decode_func)
-   ds = ds.map(decoder_func, num_parallel_calls=-1, deterministic=False)
+   ds = ds.map(decoder_func, num_parallel_calls=tf.data.AUTOTUNE, deterministic=False)
    
-   ds = ds.prefetch(-1)
+   ds = ds.prefetch(tf.data.AUTOTUNE)
    
    return ds 
 
